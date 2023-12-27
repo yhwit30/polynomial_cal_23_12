@@ -121,8 +121,27 @@ public class CalcTest {
   }
 
   @Test
-  @DisplayName("10 + 5 * 2 + 5  == 25")
+  @DisplayName("(20 + 20) + 20 == 60")
   void t20() {
-    assertThat(Calc.run("10 + 5 * 2 ")).isEqualTo(25);
+    assertThat(Calc.run("(20 + 20) + 20")).isEqualTo(60);
   }
+
+  @Test
+  @DisplayName("((20 + 20)) + 20 == 60")
+  void t21() {
+    assertThat(Calc.run("((20 + 20)) + 20")).isEqualTo(60);
+  }
+
+  @Test
+  @DisplayName("100 == 100")
+  void t22() {
+    assertThat(Calc.run("100")).isEqualTo(100);
+  }
+
+  @Test
+  @DisplayName("(100)   == 100")
+  void t23() {
+    assertThat(Calc.run("(100)  ")).isEqualTo(100);
+  }
+
 }
