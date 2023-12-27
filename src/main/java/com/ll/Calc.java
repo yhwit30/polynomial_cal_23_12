@@ -3,8 +3,10 @@ package com.ll;
 public class Calc {
   public static int run(String exp) {
 
-    boolean needToMulti = exp.contains("*");
-    boolean needToPlus = exp.contains("+")||exp.contains(" - ");
+    exp = stripOuterBracket(exp);
+
+    boolean needToMulti = exp.contains(" * ");
+    boolean needToPlus = exp.contains(" + ") || exp.contains(" - ");
     boolean needToCompound = needToMulti && needToPlus;
 
 
@@ -37,5 +39,12 @@ public class Calc {
 
 
     throw new RuntimeException("처리할 수 있는 계산식이 아닙니다");
+  }
+
+  private static String stripOuterBracket(String exp) {
+    if (exp.charAt(0) == '(' && exp.charAt(exp.length() - 1) == ')'){
+      exp = exp.substring(1, exp.length() - 1);
+    }
+    return exp;
   }
 }

@@ -97,8 +97,20 @@ public class CalcTest {
   }
 
   @Test
-  @DisplayName("10 + 10 * -2 == -10")
+  @DisplayName("10 - 10 * -2 == 30")
   void t16() {
-    assertThat(Calc.run("10 + 10 * -2")).isEqualTo(-10);
+    assertThat(Calc.run("10 - 10 * -2")).isEqualTo(30);
+  }
+
+  @Test
+  @DisplayName("10 + 5 * 2 + 5 == 25")
+  void t17() {
+    assertThat(Calc.run("10 + 5 * 2 + 5")).isEqualTo(25);
+  }
+
+  @Test
+  @DisplayName("(10 + 20) == 30")
+  void t18() {
+    assertThat(Calc.run("(10 + 20)")).isEqualTo(30);
   }
 }
