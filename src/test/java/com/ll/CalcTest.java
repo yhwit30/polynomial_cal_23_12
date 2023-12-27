@@ -95,4 +95,10 @@ public class CalcTest {
   void t15() {
     assertThat(Calc.run("10 + 5 * 2")).isEqualTo(20);
   }
+
+  @Test
+  @DisplayName("10 + 10 * -2 == -10")
+  void t16() {
+    assertThat(Calc.run("10 + 10 * -2")).isEqualTo(-10);
+  }
 }

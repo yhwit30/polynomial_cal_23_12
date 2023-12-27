@@ -4,16 +4,16 @@ public class Calc {
   public static int run(String exp) {
 
     boolean needToMulti = exp.contains("*");
-    boolean needToPlus = exp.contains("+");
-    boolean needToCompund = needToMulti && needToPlus;
+    boolean needToPlus = exp.contains("+")||exp.contains(" - ");
+    boolean needToCompound = needToMulti && needToPlus;
 
 
-    if (needToCompund) {
+    if (needToCompound) {
       exp = exp.replaceAll("- ", "\\+ -");
       String[] bits = exp.split(" \\+ ");
-      String[] bits2 = bits[1].split(" \\* ");
-
       return Integer.parseInt(bits[0]) + run(bits[1]);
+
+
     } else if (needToMulti) {
       String[] bits = exp.split(" \\* ");
 
@@ -22,9 +22,12 @@ public class Calc {
         result *= Integer.parseInt(bits[i]);
       }
       return result;
+
+
     } else if (needToPlus) {
       exp = exp.replaceAll("- ", "\\+ -");
       String[] bits = exp.split(" \\+ ");
+
       int sum = 0;
       for (int i = 0; i < bits.length; i++) {
         sum += Integer.parseInt(bits[i]);
