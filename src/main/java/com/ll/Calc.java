@@ -6,24 +6,15 @@ public class Calc {
     exp = exp.replaceAll("- ", "\\+ -");
     boolean needToPlus = exp.contains("+");
 
-    String[] bits = null;
+    String[] bits = exp.split(" \\+ ");
 
-    if (needToPlus) {
-      bits = exp.split(" \\+ ");
+    int sum = 0;
+    for (int i = 0; i < bits.length; i++) {
+      sum += Integer.parseInt(bits[i]);
     }
+    return sum;
 
-    int a = Integer.parseInt(bits[0]);
-    int b = Integer.parseInt(bits[1]);
-    int c = 0;
 
-    if (bits.length > 2) {
-      c = Integer.parseInt(bits[2]);
-    }
-
-    if (needToPlus) {
-      return a + b + c;
-    }
-
-    throw new RuntimeException("처리할 수 있는 계산식이 아닙니다");
+//    throw new RuntimeException("처리할 수 있는 계산식이 아닙니다");
   }
 }
