@@ -83,12 +83,12 @@ public class Calc {
     return exp;
   }
 
-  private static int[] isNegativeCaseBrachket(String exp) {
+  private static int[] isNegativeCaseBrachket(String exp) {  //이거 좋다.
     for (int i = 0; i < exp.length() - 1; i++) {
       if (exp.charAt(i) == '-' && exp.charAt(i + 1) == '(') {
         //마이너스 괄호 찾았다
-        int bracketCount = 1;
-        for (int j = i + 2; j < exp.length(); j++) {  //괄호식을 스킵해서 나누는 것 즉, 괄호식을 따로 계산하기 위해 묶음
+        int bracketCount = 1;   // '-('다음부터 시작하니까 다음은 ')'부터 끝내고 반복돌려야 하니까 1로 한 것.
+        for (int j = i + 2; j < exp.length(); j++) {  // '-('를 스킵해야 하니까 +2 하고 시작.
           char c = exp.charAt(j);
 
           if (c == '(') {
@@ -97,7 +97,7 @@ public class Calc {
             bracketCount--;
           }
           if (bracketCount == 0) {
-            return new int[]{i, j+1};
+            return new int[]{i, j};
           }
         }
       }
@@ -133,15 +133,26 @@ public class Calc {
   }
 
 
-  private static String stripOuterBracket(String exp) { // todo
-    int outerBracketCount = 0;
+  private static String stripOuterBracket(String exp) {
+    if (exp.charAt(0) == '(' && exp.charAt(exp.length() - 1) == ')') {
+      int bracketCount = 0;
 
-    while (exp.charAt(outerBracketCount) == '(' && exp.charAt(exp.length() - 1 - outerBracketCount) == ')') {
-      outerBracketCount++;
+      for (int i = 0; i < exp.length(); i++) {
+        if (exp.charAt(i) == '(') {
+          bracketCount++;
+        } else if (exp.charAt(i) == ')') {
+          bracketCount--;
+        }
+
+        if (bracketCount == 0) {
+          if (exp.length() == i + 1) {
+            return stripOuterBracket(exp.substring(1, exp.length() - 1));
+          }
+
+          return exp;
+        }
+      }
     }
-    if (outerBracketCount == 0) return exp;
-
-    return exp.substring(outerBracketCount, exp.length() - outerBracketCount);
+    return exp;
   }
-
 }
