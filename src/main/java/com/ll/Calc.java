@@ -27,7 +27,6 @@ public class Calc {
       return Calc.run(exp);
 
     } else if (needToCompound) {
-      exp = exp.replaceAll("- ", "\\+ -");
       String[] bits = exp.split(" \\+ ");
       return run(bits[0]) + run(bits[1]); //todo
 
@@ -66,10 +65,8 @@ public class Calc {
 
       if (c == '(') {
         bracketCount++;
-        break;
       } else if (c == ')') {
         bracketCount--;
-        break;
       } else if (c == findChar) {
         if (bracketCount == 0) return i;
       }
