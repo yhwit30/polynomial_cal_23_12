@@ -14,25 +14,14 @@ public class Calc {
     boolean needToSplit = exp.contains("(") || exp.contains(")");
 
     if (needToSplit) {
-      int bracketCount = 0;
-      int splitPointIndex = -1;
 
-      for (int i = 0; i < exp.length(); i++) {
-        if (exp.charAt(i) == '(') {
-          bracketCount++;
-        } else if (exp.charAt(i) == ')') {
-          bracketCount--;
-        }
-        if (bracketCount == 0) {
-          splitPointIndex = i;
-          break;
-        }
-      }
+      int splitPointIndex = findSplitPointIndex(exp);
 
-      String firstExp = exp.substring(0, splitPointIndex + 1); // ')'를 포함해야 하니 1번 +
-      String secondExp = exp.substring(splitPointIndex + 3); // ' + '를 띄어야하니 3번 +
+      String firstExp = exp.substring(0, splitPointIndex);
+      String secondExp = exp.substring(splitPointIndex + 1);
 
-      char operator = exp.charAt(splitPointIndex + 2);
+      char operator = exp.charAt(splitPointIndex);
+
       exp = Calc.run(firstExp) + " " + operator + " " + Calc.run(secondExp);
 
       return Calc.run(exp);
@@ -40,7 +29,7 @@ public class Calc {
     } else if (needToCompound) {
       exp = exp.replaceAll("- ", "\\+ -");
       String[] bits = exp.split(" \\+ ");
-      return Integer.parseInt(bits[0]) + run(bits[1]); //todo
+      return run(bits[0]) + run(bits[1]); //todo
 
 
     } else if (needToMulti) {
@@ -69,6 +58,35 @@ public class Calc {
         RuntimeException("처리할 수 있는 계산식이 아닙니다");
   }
 
+  private static int findSplitPointIndexBy(String exp, char findChar) {
+    int bracketCount = 0;
+
+    for (int i = 0; i < exp.length(); i++) {
+      char c = exp.charAt(i);
+
+      if (c == '(') {
+        bracketCount++;
+        break;
+      } else if (c == ')') {
+        bracketCount--;
+        break;
+      } else if (c == findChar) {
+        if (bracketCount == 0) return i;
+      }
+
+    }
+    return -1;
+  }
+
+  private static int findSplitPointIndex(String exp) {
+    int index = findSplitPointIndexBy(exp, '+');
+
+    if (index >= 0) return index;
+
+    return findSplitPointIndexBy(exp, '*');
+
+  }
+
 
   private static String stripOuterBracket(String exp) {
     int outerBracketCount = 0;
@@ -80,6 +98,5 @@ public class Calc {
 
     return exp.substring(outerBracketCount, exp.length() - outerBracketCount);
   }
+
 }
-
-

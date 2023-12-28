@@ -150,4 +150,28 @@ public class CalcTest {
     assertThat(Calc.run("(10 + 20) * 3")).isEqualTo(90);
   }
 
+  @Test
+  @DisplayName("10 + (10 + 5) == 25")
+  void t25() {
+    assertThat(Calc.run("10 + (10 + 5)")).isEqualTo(25);
+  }
+
+  @Test
+  @DisplayName("800 + (10 + 5) == 815")
+  void t26() {
+    assertThat(Calc.run("800 + (10 + 5)")).isEqualTo(815);
+  }
+
+  @Test
+  @DisplayName("10 * 15 + 10 == 160")
+  void t27() {
+    assertThat(Calc.run("10 * 15 + 10")).isEqualTo(160);
+  }
+
+  @Test
+  @DisplayName("10 * 15 + 10 * 20 == 350")
+  void t28() {
+    assertThat(Calc.run("10 * 15 + 10 * 20")).isEqualTo(350);
+  }
+
 }
