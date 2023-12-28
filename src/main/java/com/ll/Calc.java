@@ -1,9 +1,23 @@
 package com.ll;
 
 public class Calc {
+  public static boolean recursionDebug = true; // 내가 디버그 모드를 켜겠다 할때는 true로 변경
+  public static int runCallCount = 0;
+
   public static int run(String exp) {
+    runCallCount++;
+
     exp = exp.trim(); //공백제거
     exp = stripOuterBracket(exp); //괄호가 전 연산을 덮는 경우 괄호제거
+
+    if (recursionDebug) {
+      System.out.printf("exp(%d) : %s\n", runCallCount, exp);
+    }
+
+    // 음수괄호 패턴이면, 패턴 변경
+    if (isNegativeCaseBrachket(exp)) {
+      exp = exp.substring(1) + " * -1";
+    }
 
     if (!exp.contains(" ")) return Integer.parseInt(exp);  // 연산기호 없을 경우 바로 리턴
 
@@ -14,7 +28,7 @@ public class Calc {
 
     if (needToSplit) {
 
-      int splitPointIndex = findSplitPointIndex(exp); //+,*로 괄호식을 나누는 수 가져오기
+      int splitPointIndex = findSplitPointIndex(exp); //+,*로 괄호식을 나누는 수 가져오기. 안되면 -1 가져옴.
 
       String firstExp = exp.substring(0, splitPointIndex); //괄호식 따로 분배
       String secondExp = exp.substring(splitPointIndex + 1); //괄호식 외 식 분배
@@ -29,7 +43,6 @@ public class Calc {
       String[] bits = exp.split(" \\+ "); //+로 나눔
       return Calc.run(bits[0]) + Calc.run(bits[1]); //todo
 
-
     } else if (needToMulti) {
       String[] bits = exp.split(" \\* "); //*로 나눔
 
@@ -39,9 +52,8 @@ public class Calc {
       }
       return result;
 
-
     } else if (needToPlus) {
-      exp = exp.replaceAll("- ", "\\+ -");  // -부호는 합쳐서 +로 연산
+      exp = exp.replaceAll("- ", "\\+ -");  // -부호는 엮어서 +로 연산
       String[] bits = exp.split(" \\+ ");
 
       int sum = 0;
@@ -56,9 +68,30 @@ public class Calc {
         RuntimeException("처리할 수 있는 계산식이 아닙니다");
   }
 
+  private static boolean isNegativeCaseBrachket(String exp) {
+    // - 로 시작하는지 알아보기
+    if (exp.startsWith("-(") == false) return false;
+
+    // 괄호로 감싸져 있는지
+    int bracketCount = 0;
+    for (int i = 0; i < exp.length(); i++) {  //괄호식을 스킵해서 나누는 것 즉, 괄호식을 따로 계산하기 위해 묶음
+      char c = exp.charAt(i);
+
+      if (c == '(') {
+        bracketCount++;
+      } else if (c == ')') {
+        bracketCount--;
+      }
+
+      if (bracketCount == 0) {
+        if (exp.length() - 1 == i) return true;
+      }
+    }
+    return false;
+  }
+
   private static int findSplitPointIndexBy(String exp, char findChar) {
     int bracketCount = 0;
-
     for (int i = 0; i < exp.length(); i++) {  //괄호식을 스킵해서 나누는 것 즉, 괄호식을 따로 계산하기 위해 묶음
       char c = exp.charAt(i);
 
