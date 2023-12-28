@@ -2,11 +2,10 @@ package com.ll;
 
 public class Calc {
   public static int run(String exp) {
-    exp = exp.trim();
-    exp = stripOuterBracket(exp);
+    exp = exp.trim(); //공백제거
+    exp = stripOuterBracket(exp); //괄호가 전 연산을 덮는 경우 괄호제거
 
-    // 연산기호 없을 경우 바로 리턴
-    if (!exp.contains(" ")) return Integer.parseInt(exp);
+    if (!exp.contains(" ")) return Integer.parseInt(exp);  // 연산기호 없을 경우 바로 리턴
 
     boolean needToMulti = exp.contains(" * ");
     boolean needToPlus = exp.contains(" + ") || exp.contains(" - ");
@@ -15,39 +14,39 @@ public class Calc {
 
     if (needToSplit) {
 
-      int splitPointIndex = findSplitPointIndex(exp);
+      int splitPointIndex = findSplitPointIndex(exp); //+,*로 괄호식을 나누는 수 가져오기
 
-      String firstExp = exp.substring(0, splitPointIndex);
-      String secondExp = exp.substring(splitPointIndex + 1);
+      String firstExp = exp.substring(0, splitPointIndex); //괄호식 따로 분배
+      String secondExp = exp.substring(splitPointIndex + 1); //괄호식 외 식 분배
 
       char operator = exp.charAt(splitPointIndex);
 
-      exp = Calc.run(firstExp) + " " + operator + " " + Calc.run(secondExp);
+      exp = Calc.run(firstExp) + " " + operator + " " + Calc.run(secondExp);  //괄호식 계산과 그 외 계산을 연산
 
-      return Calc.run(exp);
+      return Calc.run(exp);  //split한 경우 계산값 리턴
 
     } else if (needToCompound) {
-      String[] bits = exp.split(" \\+ ");
-      return run(bits[0]) + run(bits[1]); //todo
+      String[] bits = exp.split(" \\+ "); //+로 나눔
+      return Calc.run(bits[0]) + Calc.run(bits[1]); //todo
 
 
     } else if (needToMulti) {
-      String[] bits = exp.split(" \\* ");
+      String[] bits = exp.split(" \\* "); //*로 나눔
 
-      int result = 1;
+      int result = 1; //곱하기라 결과를 1로 둬야하는 것 주의!
       for (int i = 0; i < bits.length; i++) {
-        result *= Integer.parseInt(bits[i]);
+        result *= Integer.parseInt(bits[i]); // result = result * Integer.parseInt(bits[i])
       }
       return result;
 
 
     } else if (needToPlus) {
-      exp = exp.replaceAll("- ", "\\+ -");
+      exp = exp.replaceAll("- ", "\\+ -");  // -부호는 합쳐서 +로 연산
       String[] bits = exp.split(" \\+ ");
 
       int sum = 0;
       for (int i = 0; i < bits.length; i++) {
-        sum += Integer.parseInt(bits[i]);
+        sum += Integer.parseInt(bits[i]); // sum = sum + Integer.parseInt(bits[i])
       }
       return sum;
     }
@@ -60,7 +59,7 @@ public class Calc {
   private static int findSplitPointIndexBy(String exp, char findChar) {
     int bracketCount = 0;
 
-    for (int i = 0; i < exp.length(); i++) {
+    for (int i = 0; i < exp.length(); i++) {  //괄호식을 스킵해서 나누는 것 즉, 괄호식을 따로 계산하기 위해 묶음
       char c = exp.charAt(i);
 
       if (c == '(') {
@@ -72,20 +71,20 @@ public class Calc {
       }
 
     }
-    return -1;
+    return -1;  // 혹시 모를 반증에 대비
   }
 
   private static int findSplitPointIndex(String exp) {
     int index = findSplitPointIndexBy(exp, '+');
 
-    if (index >= 0) return index;
+    if (index >= 0) return index; //+로 값이 있으면 그걸 리턴하고
 
-    return findSplitPointIndexBy(exp, '*');
+    return findSplitPointIndexBy(exp, '*'); //아니면 *를 리턴
 
   }
 
 
-  private static String stripOuterBracket(String exp) {
+  private static String stripOuterBracket(String exp) { //전체식이 괄호로 묶여있는 경우 괄호제거
     int outerBracketCount = 0;
 
     while (exp.charAt(outerBracketCount) == '(' && exp.charAt(exp.length() - 1 - outerBracketCount) == ')') {
