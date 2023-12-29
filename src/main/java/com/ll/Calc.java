@@ -29,6 +29,7 @@ public class Calc {
     boolean needToSplit = exp.contains("(") || exp.contains(")");
 
     if (needToSplit) {
+      exp = exp.replaceAll("- ", "\\+ -");
 
       int splitPointIndex = findSplitPointIndex(exp); //+,*로 괄호식을 나누는 수 가져오기. 안되면 -1 가져옴.
 
@@ -44,7 +45,8 @@ public class Calc {
 
     } else if (needToCompound) {
       String[] bits = exp.split(" \\+ "); //+로 나눔
-      return Calc.run(bits[0]) + Calc.run(bits[1]); //todo
+
+      return run(bits[0]) + run(bits[1]);
 
 
     } else if (needToMulti) {
