@@ -1,10 +1,18 @@
 package com.ll;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class Calc {
   public static boolean recursionDebug = true; // 내가 디버그 모드를 켜겠다 할때는 true로 변경
   public static int runCallCount = 0;
 
-  public static int run(String exp) {
+  public static int run(String exp){
+    return _run(exp, 0);
+  }
+
+  public static int _run(String exp, int depth) {
     runCallCount++;
 
     exp = exp.trim(); //공백제거
@@ -18,7 +26,8 @@ public class Calc {
     exp = stripOuterBracket(exp);
 
     if (recursionDebug) {
-      System.out.printf("exp(%d) : %s\n", runCallCount, exp);
+      System.out.print(" ".repeat(depth * 4));
+      System.out.printf("exp(%d in %d) : %s\n", runCallCount, depth, exp);
     }
 
     if (!exp.contains(" ")) return Integer.parseInt(exp);  // 연산기호 없을 경우 바로 리턴
@@ -38,15 +47,17 @@ public class Calc {
 
       char operator = exp.charAt(splitPointIndex);
 
-      exp = Calc.run(firstExp) + " " + operator + " " + Calc.run(secondExp);  //괄호식 계산과 그 외 계산을 연산
+      exp = Calc._run(firstExp, depth + 1) + " " + operator + " " + Calc._run(secondExp, depth + 1);  //괄호식 계산과 그 외 계산을 연산
 
-      return Calc.run(exp);  //split한 경우 계산값 리턴
+      return Calc._run(exp, depth + 1);  //split한 경우 계산값 리턴
 
 
     } else if (needToCompound) {
       String[] bits = exp.split(" \\+ "); //+로 나눔
 
-      return run(bits[0]) + run(bits[1]);
+      String newExp = Arrays.stream(bits).mapToInt(e -> Calc.run(e)).mapToObj(e -> e + "").collect(Collectors.joining(" + "));
+
+      return Calc._run(newExp, depth + 1);
 
 
     } else if (needToMulti) {
